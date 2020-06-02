@@ -12,7 +12,7 @@ class FastTextEmbedding(Embedding):
     Reference: https://arxiv.org/abs/1607.04606
     """
 
-    url = 'https://s3-us-west-1.amazonaws.com/fasttext-vectors/wiki.{}.zip'
+    url = 'https://dl.fbaipublicfiles.com/fasttext/vectors-english/wiki-news-300d-1M.vec.zip'
     sizes = {
         'en': 1,
     }
