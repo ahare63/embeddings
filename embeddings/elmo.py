@@ -6,6 +6,8 @@ import zipfile
 from tqdm import tqdm
 from embeddings.embedding import Embedding
 
+from allennlp.modules.elmo import batch_to_ids
+from allennlp.commands.elmo import ElmoEmbedder
 
 class ElmoEmbedding(Embedding):
     """
@@ -24,12 +26,17 @@ class ElmoEmbedding(Embedding):
         self.fweights = self.ensure_file(path.join('elmo', 'weights.hdf5'), url=self.settings['weights'])
         self.foptions = self.ensure_file(path.join('elmo', 'options.json'), url=self.settings['options'])
         self.embeddings = _ElmoCharacterEncoder(self.foptions, self.fweights)
+        self.sentence_embedder = ElmoEmbedder()
 
     def emb(self, word, default=None):
-        from allennlp.modules.elmo import batch_to_ids
-        idx = batch_to_ids([[word]])
-        emb = self.embeddings(idx)['token_embedding']
-        return emb[0, 1].tolist()
+        # If `word` is a list, return contextualized vectors
+        if isinstance(word, list):
+            return self.sentence_embedder.embed_sentence(word)
+        # Otherwise, return a single, static vector
+        else:
+            idx = batch_to_ids([[word]])
+            emb = self.embeddings(idx)['token_embedding']
+            return emb[0, 1].tolist()
 
 
 if __name__ == '__main__':
