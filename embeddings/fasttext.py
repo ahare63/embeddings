@@ -51,11 +51,11 @@ class FastTextEmbedding(Embedding):
         return [get_default() for i in range(self.d_emb)] if g is None else g
 
     def load_word2emb(self, show_progress=True, batch_size=1000):
-        fin_name = self.ensure_file(path.join('fasttext', 'wiki-news-300d-1M.zip'), url=self.url.format(self.lang))
+        fin_name = self.ensure_file(path.join('fasttext', 'en.zip'), url=self.url.format(self.lang))
         seen = set()
 
         with zipfile.ZipFile(fin_name) as fin:
-            content = fin.read('wiki.{}.vec'.format(self.lang))
+            content = fin.read('wiki-news-300d-1M.vec')
             lines = content.splitlines()
             if show_progress:
                 lines = tqdm(lines)
