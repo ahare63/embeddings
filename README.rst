@@ -30,8 +30,11 @@ Installation
 
 .. code-block:: sh
 
-    pip install embeddings  # from pypi
-    pip install git+https://github.com/vzhong/embeddings.git  # from github
+    pip install git+https://github.com/ahare63/embeddings.git  # from github
+    # If this doesn't work, install manually after downloading and unzipping
+    cd embeddings
+    pip install -r requirements.txt
+    python setup.py install --user
 
 
 Usage
@@ -45,11 +48,12 @@ Embedding databases are stored in the ``$EMBEDDINGS_ROOT`` directory (defaults t
 
 .. code-block:: python
 
-    from embeddings import GloveEmbedding, FastTextEmbedding, KazumaCharEmbedding, ConcatEmbedding
+    from embeddings import GloveEmbedding, FastTextEmbedding, ConcatEmbedding, ElmoEmbedding
+    import numpy as np
     
     g = GloveEmbedding('common_crawl_840', d_emb=300, show_progress=True)
     f = FastTextEmbedding()
-    k = KazumaCharEmbedding()
+    k = ElmoEmbedding(). # static/global ELMo embeddings
     c = ConcatEmbedding([g, f, k])
     for w in ['canada', 'vancouver', 'toronto']:
         print('embedding {}'.format(w))
@@ -57,6 +61,14 @@ Embedding databases are stored in the ``$EMBEDDINGS_ROOT`` directory (defaults t
         print(f.emb(w))
         print(k.emb(w))
         print(c.emb(w))
+        
+    # Embed an entire sentence with ELMo Contextual Embeddings
+    sentence = ['We', 'went', 'to', 'canada', ',' 'vancouver', ',', 'and', 'toronto', '.']
+    sen_embedding = k.sentence_embedder.embed_sentence()
+    # Print the embedding for each word in the sentence as a single vector
+    # See AllenNLP documentation for what these mean
+    for i in range(len(sentence)):
+        print(np.concatenate((sen_embedding[0][i], sen_embedding[1][i], sen_embedding[2][i])))
 
 
 Docker
