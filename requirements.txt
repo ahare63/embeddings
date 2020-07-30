@@ -1,1 +1,4 @@
 allennlp==0.9.0
+gensim>=3.8
+pyemd>=0.5
+numpy>=1.9
